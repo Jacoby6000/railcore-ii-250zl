@@ -2,9 +2,13 @@
 ; Communication and general
 M111 S0                             ; Debug off
 M550 PRailCore250ZL                 ; Machine name and Netbios name (can be anything you like)
-;M551 Pmyrap                        ; Machine password (used for FTP)
 ;*** If you have more than one Duet on your network, they must all have different MAC addresses, so change the last digits
 M540 P0xBE:0xEF:0xDE:0xAD:0xFE:0xEE ; MAC Address
+
+;FTP
+M551 P"o@dB9rts25!ZR$84YtUIkN*H"                        ; Machine password
+M586 P1 S1 T0 R21
+
 
 ; Wifi Networking
 M552 S1                             ; Enable WiFi
@@ -39,7 +43,7 @@ M574 X1 Y1 S3                       ; set sensorless homing for X/Y
 M574 Z0 S0                          ; set sensored homing for Z( z at max)
 ; Endstop Switch Homing
 ; M574 X1 Y1 Z0 S0                  ; set homing switch configuration (x,y at min, z at max)
-M906 X1000 Y1000 Z1500 E700 I60     ; Set motor currents (mA)
+M906 X1000 Y1000 Z1000 E700 I30     ; Set motor currents (mA)
 M201 X3000 Y3000 Z20 E1000          ; Accelerations (mm/s^2)
 M203 X24000 Y24000 Z900 E3600       ; Maximum speeds (mm/min)
 M566 X1000 Y1000 Z30 E20            ; Maximum jerk speeds mm/minute
@@ -58,17 +62,11 @@ M143 S320
 
 ; Fans
 M106 P0 H-1                         ; disable thermostatic mode for fan 0
-M106 P1 H-1                         ; disable thermostatic mode for fan 1
+M106 P1 H1 T45 S255                 ; set hot-end fan to turn on when temp is above 45C.
 M106 P2 H-1
 M106 P0 S0                          ; turn off fans
 M106 P1 S0
 M106 P2 S0
-
-
-; Fan 8 is used for controlling ATX power.  It's special and magical.  
-; Don't judge my wonky-ass setup.
-M106 P8 H-1 ; disable thermostatic mode for fan 8
-M106 P8 S0  ; tun off fan 8
 
 ; Tool definitions
 M563 P0 D0 H1                            ; Define tool 0
@@ -100,3 +98,5 @@ G31 X2 Y41 Z0.55 P500               ; Set the zprobe height, offset, and thresho
 M208 S1 Z-0.2                       ; set minimum Z
 ;
 T0                                  ; select first hot end
+
+M81; ensure ATX power is off on boot.
